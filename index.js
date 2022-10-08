@@ -12,7 +12,7 @@ require('dotenv').config() //подключение модуля с токено
 
 // const config = require('config')
 const bot = new Telegraf(process.env.BOT_TOKEN)
-const SceneGenerator = require('./Scenes')
+const SceneGenerator = require('./scenes')
 const curScene = new SceneGenerator()
 const helloScene = curScene.GenHelloScene()
 const sexScene = curScene.GenSexScene()
