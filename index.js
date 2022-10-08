@@ -1,0 +1,60 @@
+const {Telegraf} = require('telegraf')
+const {
+    Extra,
+    Markup,
+    Stage,
+    session
+} = Telegraf
+
+require('dotenv').config() //подключение модуля с токеном
+
+
+
+// const config = require('config')
+const bot = new Telegraf(process.env.BOT_TOKEN)
+const SceneGenerator = require('./Scenes')
+const curScene = new SceneGenerator()
+const helloScene = curScene.GenHelloScene()
+const sexScene = curScene.GenSexScene()
+const ageScene = curScene.GenAgeScene()
+const heightScene = curScene.GenHeightScene()
+const weightScene = curScene.GenWeightScene()
+const inTotalScene = curScene.GenInTotalScene()
+// Main scenes
+const mainMenuScene = curScene.GenMainMenuScene()
+const waterScene = curScene.GenWaterScene()
+const sleepScene = curScene.GenSleepScene()
+const mealsScene = curScene.GenMealsScene()
+const sportScene = curScene.GenSportScene()
+const stressScene = curScene.GenStressScene()
+const editDataScene = curScene.GenEditDataScene()
+
+
+bot.use(Telegraf.log())
+
+const stage = new Stage([helloScene, sexScene, ageScene, heightScene, weightScene, inTotalScene, mainMenuScene, waterScene, sleepScene, mealsScene, sportScene, stressScene, editDataScene])
+
+bot.use(session())
+bot.use(stage.middleware())
+
+// bot.start((ctx) => ctx.reply('Welcome'))
+bot.help((ctx) => ctx.reply('Send me a sticker'))
+bot.command('echo', (ctx) => ctx.reply('Echo'))
+bot.command('start', async (ctx) => {
+    ctx.scene.enter('hello')
+})
+bot.command('menu', async (ctx) => {
+    ctx.scene.enter('mainMenu')
+})
+bot.on('sticker', (ctx) => ctx.reply('👍'))
+bot.hears('hi', (ctx) => ctx.reply('Hey there'))
+
+
+
+bot.launch()
+
+
+
+// Enable graceful stop
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
