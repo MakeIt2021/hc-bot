@@ -14,10 +14,11 @@
   "license": "ISC",
   "dependencies": {
     "config": "^3.3.8",
-    "dotenv": "^16.0.2",
-    "nodemon": "^2.0.20",
-    "telegraf": "^3.36.0"
+    "dotenv": "^16.0.3",
+    "telegraf": "^3.40.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
   "description": ""
 }

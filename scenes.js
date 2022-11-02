@@ -1,15 +1,37 @@
 const Scene = require('telegraf/scenes/base')
-let user_name, user_sex, user_age, user_height, user_weight, waterToday
+const fs = require("fs")
+// let user_name, user_sex, user_age, user_height, user_weight, waterToday
+
+let chats = {}
+
+class Users {
+    constructor(id, name, age, sex, height, weight) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+        this.height = height;
+        this.weight = weight;
+    }
+}
+
+let user = new Users()
 
 class SceneGenerator {
     //======================================================\\ ПЕРВОНАЧАЛЬНОЕ ПРИВЕТСТВИЕ //======================================================\\
     GenHelloScene() {
+
         const hello = new Scene('hello')
         hello.enter(async (ctx) => {
             await ctx.reply('Здравствуйте. Давайте познакомимся. Напишите мне, как Вас зовут?')
         })
         hello.on('text', async (ctx) => {
-            user_name = ctx.message.text
+            let user_name = ctx.message.text
+            // chats.id = ctx.message.from.id
+            // chats.id.name = user_name
+            let user_id = ctx.message.from.id
+            user.id = user_id
+            user.name = user_name
             if (user_name) {
                 await ctx.reply(`Привет, ${user_name}`)
                 await ctx.scene.enter('sex')
@@ -40,12 +62,14 @@ class SceneGenerator {
         })
         sex.action('male', async ctx => {
             ctx.deleteMessage()
-            user_sex = 'Мужчина'
+            let user_sex = 'Мужчина'
+            // chats[ctx.callback_query.from.id + 'sex'] = user_sex
             ctx.scene.enter('age')
         })
         sex.action('female', async ctx => {
             ctx.deleteMessage()
-            user_sex = 'Женщина'
+            let user_sex = 'Женщина'
+            // chats[ctx.callback_query.from.id + 'sex'] = user_sex
             ctx.scene.enter('age')
         })
         return sex
@@ -57,7 +81,17 @@ class SceneGenerator {
             await ctx.reply('Хорошо. Напишите пожалуйста, сколько Вам лет?')
         })
         age.on('text', async (ctx) => {
-            user_age = Number(ctx.message.text)
+            let user_age = Number(ctx.message.text)
+            let user_id = ctx.message.from.id
+
+            if (user.id == user_id)
+                user.age = user_age
+            // else {
+                // await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова')
+                // ctx.scene.leave
+            // }
+            // chats.id = ctx.message.from.id
+            // chats.age = user_age
             if (user_age && user_age > 0) {
                 ctx.scene.enter('height')
             } else {
@@ -75,7 +109,17 @@ class SceneGenerator {
             await ctx.reply('Спасибо. А какой у Вас рост?')
         })
         height.on('text', async (ctx) => {
-            user_height = Number(ctx.message.text)
+            let user_height = Number(ctx.message.text)
+            let user_id = ctx.message.from.id
+
+            if (user.id == user_id)
+                user.height = user_height
+            // else {
+            //     await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова')
+            //     ctx.scene.leave()
+            // }
+            // chats.id = ctx.message.from.id
+            // chats.height = user_height
             if (user_height && user_height > 0) {
                 ctx.scene.enter('weight')
             } else {
@@ -93,7 +137,17 @@ class SceneGenerator {
             await ctx.reply('Благодарю. Сколько Вы весите?')
         })
         weight.on('text', async (ctx) => {
-            user_weight = Number(ctx.message.text)
+            let user_weight = Number(ctx.message.text)
+
+            let user_id = ctx.message.from.id
+            if (user.id == user_id)
+                user.weight = user_weight
+            // else {
+            //     await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова')
+            //     ctx.scene.leave()
+            // }
+            // chats.id = ctx.message.from.id
+            // chats.weight = user_weight
             if (user_weight && user_weight > 0) {
                 ctx.scene.enter('inTotal')
             } else {
@@ -108,7 +162,7 @@ class SceneGenerator {
     GenInTotalScene () {
         const inTotal = new Scene('inTotal')
         inTotal.enter(async (ctx) => {
-            await ctx.reply(`Спасибо за Ваши ответы, ${user_name}! Итак, Вы ${user_sex} и Вам ${user_age} лет. Ваш рост ${user_height}, а весите Вы ${user_weight} кг. Всё верно?`, {
+            await ctx.reply(`Спасибо за Ваши ответы, ${chats}! Итак, Вы ${chats} и Вам ${chats} лет. Ваш рост ${chats}, а весите Вы ${chats} кг. Всё верно?`, {
                 reply_markup: {
                     inline_keyboard: [
                         [
@@ -125,8 +179,10 @@ class SceneGenerator {
         // buttons_clarify
         inTotal.action('ok', async ctx => {
             ctx.deleteMessage()
-            // TODO: Главное меню
-            await ctx.reply('🚀')
+            fs.appendFileSync("db.txt", JSON.stringify(user) + "\n ------- \n")
+            // fs.writeFileSync("db.txt", "-----------")
+            await ctx.reply(user)
+            console.log(user)
             ctx.scene.enter('mainMenu')
         })
         inTotal.action('needToEdit', async ctx => {
@@ -206,7 +262,7 @@ class SceneGenerator {
         })
 
         water.action('plus', async ctx => {
-            waterToday += 1
+            //todo waterToday += 1
             // ctx.editMessageText(chatId, messageId, `Сегодня Вы выпили ${waterToday} стаканов`)
         })
 
