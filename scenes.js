@@ -16,6 +16,7 @@ class Users {
 }
 
 let user = new Users()
+let user_id_start
 
 class SceneGenerator {
     //======================================================\\ ПЕРВОНАЧАЛЬНОЕ ПРИВЕТСТВИЕ //======================================================\\
@@ -27,9 +28,11 @@ class SceneGenerator {
         })
         hello.on('text', async (ctx) => {
             let user_name = ctx.message.text
+            let user_id = ctx.message.from.id
+            user_id_start = ctx.message.from.id
             // chats.id = ctx.message.from.id
             // chats.id.name = user_name
-            let user_id = ctx.message.from.id
+
             user.id = user_id
             user.name = user_name
             if (user_name) {
@@ -162,34 +165,49 @@ class SceneGenerator {
     GenInTotalScene () {
         const inTotal = new Scene('inTotal')
         inTotal.enter(async (ctx) => {
-            await ctx.reply(`Спасибо за Ваши ответы, ${chats}! Итак, Вы ${chats} и Вам ${chats} лет. Ваш рост ${chats}, а весите Вы ${chats} кг. Всё верно?`, {
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {text: 'Всё верно 🚀', callback_data: 'ok'}
-                        ],
-                        [
-                            {text: 'Нет, нужно исправить', callback_data: 'needToEdit'}
+            let user_id = ctx.message.from.id
+            if (user.id == user_id && user_id == user_id_start){
+                await ctx.reply(`Спасибо за Ваши ответы, ${user.name}! Итак, Вы sex и Вам ${user.age} лет. Ваш рост ${user.height}, а весите Вы ${user.weight} кг. Всё верно?`, {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                {text: 'Всё верно 🚀', callback_data: 'ok'}
+                            ],
+                            [
+                                {text: 'Нет, нужно исправить', callback_data: 'needToEdit'}
+                            ]
                         ]
-                    ]
-                }
-            })
+                    }
+                })
+
+                // buttons_clarify
+                inTotal.action('ok', async ctx => {
+                    if (user.id == user_id && user_id == user_id_start) {
+                        ctx.deleteMessage()
+                        fs.appendFileSync("db.txt", JSON.stringify(user) + "\n ------- \n")
+                        // fs.writeFileSync("db.txt", "-----------")
+                        await ctx.reply(user)
+                        console.log(user)
+                        ctx.scene.enter('mainMenu')
+                    }
+                    else {
+                        await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова.')
+                    }
+                })
+
+                inTotal.action('needToEdit', async ctx => {
+                    ctx.deleteMessage()
+                    ctx.scene.enter('hello')
+                })
+            } else {
+                await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова.')
+                //todo Реализовать уведомление!
+            }
+
         })
 
-        // buttons_clarify
-        inTotal.action('ok', async ctx => {
-            ctx.deleteMessage()
-            fs.appendFileSync("db.txt", JSON.stringify(user) + "\n ------- \n")
-            // fs.writeFileSync("db.txt", "-----------")
-            await ctx.reply(user)
-            console.log(user)
-            ctx.scene.enter('mainMenu')
-        })
-        inTotal.action('needToEdit', async ctx => {
-            ctx.deleteMessage()
-            // TODO: Editing info
-            ctx.scene.enter('editData')
-        })
+
+
         return inTotal
     }
 
