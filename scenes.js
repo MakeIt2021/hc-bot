@@ -1,8 +1,5 @@
 const Scene = require('telegraf/scenes/base')
 const fs = require("fs")
-// let user_name, user_sex, user_age, user_height, user_weight, waterToday
-
-let chats = {}
 
 class Users {
     constructor(id, name, age, sex, height, weight) {
@@ -84,14 +81,16 @@ class SceneGenerator {
         sex.action('male', async ctx => {
             ctx.deleteMessage()
             let user_sex = 'Мужчина'
-            // chats[ctx.callback_query.from.id + 'sex'] = user_sex
-            ctx.scene.enter('age')
+            user.sex = user_sex
+
+            await ctx.scene.enter('age')
         })
         sex.action('female', async ctx => {
             ctx.deleteMessage()
             let user_sex = 'Женщина'
-            // chats[ctx.callback_query.from.id + 'sex'] = user_sex
-            ctx.scene.enter('age')
+            user.sex = user_sex
+
+            await ctx.scene.enter('age')
         })
         return sex
     }
@@ -108,10 +107,10 @@ class SceneGenerator {
             if (user.id == user_id)
                 user.age = user_age
             if (user_age && user_age > 0) {
-                ctx.scene.enter('height')
+                await ctx.scene.enter('height')
             } else {
                 await ctx.reply('Меня не проведешь! Напиши пожалуйста возраст цифрами и больше нуля')
-                ctx.scene.reenter()
+                await ctx.scene.reenter()
             }
         })
         age.on('message', (ctx) => ctx.reply('Давай лучше возраст'))
@@ -129,17 +128,11 @@ class SceneGenerator {
 
             if (user.id == user_id)
                 user.height = user_height
-            // else {
-            //     await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова')
-            //     ctx.scene.leave()
-            // }
-            // chats.id = ctx.message.from.id
-            // chats.height = user_height
             if (user_height && user_height > 0) {
-                ctx.scene.enter('weight')
+                await ctx.scene.enter('weight')
             } else {
                 await ctx.reply('Меня не проведешь! Напиши пожалуйста возраст цифрами и больше нуля')
-                ctx.scene.reenter()
+                await ctx.scene.reenter()
             }
         })
         height.on('message', (ctx) => ctx.reply('Давай лучше рост'))
@@ -157,17 +150,11 @@ class SceneGenerator {
             let user_id = ctx.message.from.id
             if (user.id == user_id)
                 user.weight = user_weight
-            // else {
-            //     await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова')
-            //     ctx.scene.leave()
-            // }
-            // chats.id = ctx.message.from.id
-            // chats.weight = user_weight
             if (user_weight && user_weight > 0) {
-                ctx.scene.enter('inTotal')
+                await ctx.scene.enter('inTotal')
             } else {
                 await ctx.reply('Меня не проведешь! Напиши пожалуйста возраст цифрами и больше нуля')
-                ctx.scene.reenter()
+                await ctx.scene.reenter()
             }
         })
         weight.on('message', (ctx) => ctx.reply('Давай лучше вес'))
@@ -179,7 +166,7 @@ class SceneGenerator {
         inTotal.enter(async (ctx) => {
             let user_id = ctx.message.from.id
             if (user.id == user_id && user_id == user_id_start){
-                await ctx.reply(`Спасибо за Ваши ответы, ${user.name}! Итак, Вы sex и Вам ${user.age} лет. Ваш рост ${user.height}, а весите Вы ${user.weight} кг. Всё верно?`, {
+                await ctx.reply(`Спасибо за Ваши ответы, ${user.name}! Итак, Вы ${user.sex} и Вам ${user.age} лет. Ваш рост ${user.height}, а весите Вы ${user.weight} кг. Всё верно?`, {
                     reply_markup: {
                         inline_keyboard: [
                             [
@@ -194,22 +181,16 @@ class SceneGenerator {
 
                 // buttons_clarify
                 inTotal.action('ok', async ctx => {
-                    if (user.id == user_id && user_id == user_id_start) {
-                        ctx.deleteMessage()
-                        fs.appendFileSync("db.txt", JSON.stringify(user) + "\n ------- \n")
-                        // fs.writeFileSync("db.txt", "-----------")
-                        await ctx.reply(user)
-                        console.log(user)
-                        ctx.scene.enter('mainMenu')
-                    }
-                    else {
-                        await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова.')
-                    }
+                    ctx.deleteMessage()
+                    fs.appendFileSync("db.txt", JSON.stringify(user) + "\n ------- \n")
+                    await ctx.reply(user)
+                    console.log(user)
+                    await ctx.scene.enter('mainMenu')
                 })
 
                 inTotal.action('needToEdit', async ctx => {
                     ctx.deleteMessage()
-                    ctx.scene.enter('hello')
+                    await ctx.scene.enter('hello')
                 })
             } else {
                 await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова.')
@@ -245,23 +226,23 @@ class SceneGenerator {
 
         mainMenu.action('water', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('water')
+            await ctx.scene.enter('water')
         })
         mainMenu.action('sleep', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('sleep')
+            await ctx.scene.enter('sleep')
         })
         mainMenu.action('meals', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('meals')
+            await ctx.scene.enter('meals')
         })
         mainMenu.action('sport', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('sport')
+            await ctx.scene.enter('sport')
         })
         mainMenu.action('stress', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('stress')
+            await ctx.scene.enter('stress')
         })
         return mainMenu
     }
@@ -294,7 +275,7 @@ class SceneGenerator {
 
         water.action('back', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('mainMenu')
+            await ctx.scene.enter('mainMenu')
         })
         return water
     }
@@ -315,7 +296,7 @@ class SceneGenerator {
 
         sleep.action('back', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('mainMenu')
+            await ctx.scene.enter('mainMenu')
         })
         return sleep
     }
@@ -336,7 +317,7 @@ class SceneGenerator {
 
         meals.action('back', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('mainMenu')
+            await ctx.scene.enter('mainMenu')
         })
         return meals
     }
@@ -357,7 +338,7 @@ class SceneGenerator {
 
         sport.action('back', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('mainMenu')
+            await ctx.scene.enter('mainMenu')
         })
         return sport
     }
@@ -378,7 +359,7 @@ class SceneGenerator {
 
         stress.action('back', async ctx => {
             ctx.deleteMessage()
-            ctx.scene.enter('mainMenu')
+            await ctx.scene.enter('mainMenu')
         })
         return stress
     }

@@ -37,7 +37,6 @@ const stage = new Stage([checker, helloScene, sexScene, ageScene, heightScene, w
 bot.use(session())
 bot.use(stage.middleware())
 
-// bot.start((ctx) => ctx.reply('Welcome'))
 bot.help((ctx) => ctx.reply('Send me a sticker'))
 bot.command('echo', (ctx) => ctx.reply('Echo'))
 bot.command('start', async (ctx) => {
