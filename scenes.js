@@ -19,6 +19,26 @@ let user = new Users()
 let user_id_start
 
 class SceneGenerator {
+    GenCheckerScene() {
+        const checker = new Scene('checker')
+        checker.enter(async (ctx) => {
+            user_id_start = ctx.message.from.id
+            let data
+
+            data = fs.readFileSync("db.txt", "utf8");
+            // console.log(data)
+            if (data.includes(`"id":${user_id_start}`)) {
+                let str = data.slice(data.indexOf(`"id":${user_id_start}`) - 1, data.indexOf('\n', data.indexOf(`"id":${user_id_start}`)))
+                const user = JSON.parse(str)
+
+                await ctx.reply(`Здравствуйте, ${user.name}. Рады возвращению!`)
+                await ctx.scene.enter('mainMenu')
+            } else {
+                await ctx.scene.enter('hello')
+            }
+        })
+        return checker
+    }
     //======================================================\\ ПЕРВОНАЧАЛЬНОЕ ПРИВЕТСТВИЕ //======================================================\\
     GenHelloScene() {
 
@@ -30,8 +50,6 @@ class SceneGenerator {
             let user_name = ctx.message.text
             let user_id = ctx.message.from.id
             user_id_start = ctx.message.from.id
-            // chats.id = ctx.message.from.id
-            // chats.id.name = user_name
 
             user.id = user_id
             user.name = user_name
@@ -89,12 +107,6 @@ class SceneGenerator {
 
             if (user.id == user_id)
                 user.age = user_age
-            // else {
-                // await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова')
-                // ctx.scene.leave
-            // }
-            // chats.id = ctx.message.from.id
-            // chats.age = user_age
             if (user_age && user_age > 0) {
                 ctx.scene.enter('height')
             } else {
@@ -203,11 +215,7 @@ class SceneGenerator {
                 await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова.')
                 //todo Реализовать уведомление!
             }
-
         })
-
-
-
         return inTotal
     }
 
@@ -373,14 +381,6 @@ class SceneGenerator {
             ctx.scene.enter('mainMenu')
         })
         return stress
-    }
-
-    GenEditDataScene () {
-        const editData = new Scene('editData')
-        editData.enter(async (ctx) => {
-            await ctx.reply('Тут пока ничего нет!')
-        })
-        return editData
     }
 }
 

@@ -14,6 +14,7 @@ require('dotenv').config() //подключение модуля с токено
 const bot = new Telegraf(process.env.BOT_TOKEN)
 const SceneGenerator = require('./scenes')
 const curScene = new SceneGenerator()
+const checker = curScene.GenCheckerScene()
 const helloScene = curScene.GenHelloScene()
 const sexScene = curScene.GenSexScene()
 const ageScene = curScene.GenAgeScene()
@@ -27,12 +28,11 @@ const sleepScene = curScene.GenSleepScene()
 const mealsScene = curScene.GenMealsScene()
 const sportScene = curScene.GenSportScene()
 const stressScene = curScene.GenStressScene()
-const editDataScene = curScene.GenEditDataScene()
 
 
 bot.use(Telegraf.log())
 
-const stage = new Stage([helloScene, sexScene, ageScene, heightScene, weightScene, inTotalScene, mainMenuScene, waterScene, sleepScene, mealsScene, sportScene, stressScene, editDataScene])
+const stage = new Stage([checker, helloScene, sexScene, ageScene, heightScene, weightScene, inTotalScene, mainMenuScene, waterScene, sleepScene, mealsScene, sportScene, stressScene])
 
 bot.use(session())
 bot.use(stage.middleware())
@@ -41,7 +41,7 @@ bot.use(stage.middleware())
 bot.help((ctx) => ctx.reply('Send me a sticker'))
 bot.command('echo', (ctx) => ctx.reply('Echo'))
 bot.command('start', async (ctx) => {
-    ctx.scene.enter('hello')
+    ctx.scene.enter('checker')
 })
 bot.command('menu', async (ctx) => {
     ctx.scene.enter('mainMenu')
