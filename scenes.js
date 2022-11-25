@@ -285,13 +285,29 @@ class SceneGenerator {
                 usersTempData = JSON.parse(str)
                 usersTempData.water += 1
                 let data2 = fs.readFileSync("db_temp_values.txt", "utf8")
-                // {"id":767158800,"water":31}
-                // -------
                 data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water - 1}}\n ------- \n`, '')
                 fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
             } else {
                 usersTempData.water = 1
                 fs.appendFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n")
+            }
+            await ctx.reply(usersTempData)
+        })
+
+        water.action('minus', async ctx => {
+            usersTempData.id = ctx.callbackQuery.from.id
+
+            let data = fs.readFileSync("db_temp_values.txt", "utf8");
+            if (data.includes(`"id":${ctx.callbackQuery.from.id}`)) {
+                let str = data.slice(data.indexOf(`"id":${ctx.callbackQuery.from.id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${ctx.callbackQuery.from.id}`)))
+                usersTempData = JSON.parse(str)
+
+                if (usersTempData.water >= 1) {
+                    usersTempData.water -= 1
+                    let data2 = fs.readFileSync("db_temp_values.txt", "utf8")
+                    data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water + 1}}\n ------- \n`, '')
+                    fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
+                }
             }
             await ctx.reply(usersTempData)
         })
