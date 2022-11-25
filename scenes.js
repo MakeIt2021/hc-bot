@@ -22,6 +22,7 @@ class tempData {
 let user = new Users()
 let usersTempData = new tempData()
 let user_id_start
+let water_message_id
 
 class SceneGenerator {
     GenCheckerScene() {
@@ -234,6 +235,8 @@ class SceneGenerator {
 
         mainMenu.action('water', async ctx => {
             ctx.deleteMessage()
+
+            water_message_id = (await ctx.reply('Сегодня Вы выпили $ стаканов')).message_id
             await ctx.scene.enter('water')
         })
         mainMenu.action('sleep', async ctx => {
@@ -258,7 +261,8 @@ class SceneGenerator {
     GenWaterScene () {
         const water = new Scene('water')
         water.enter(async (ctx) => {
-            await ctx.reply(`Сегодня Вы выпили $ стаканов`, {
+            // ctx.deleteMessage()
+            await ctx.reply(`Воспользуйтесь кнопками ниже`, {
                 reply_markup: {
                     inline_keyboard: [
                         [
@@ -277,6 +281,7 @@ class SceneGenerator {
         })
 
         water.action('plus', async ctx => {
+            // await ctx.deleteMessage(water_message_id)
             usersTempData.id = ctx.callbackQuery.from.id
 
             let data = fs.readFileSync("db_temp_values.txt", "utf8");
@@ -287,16 +292,17 @@ class SceneGenerator {
                 let data2 = fs.readFileSync("db_temp_values.txt", "utf8")
                 data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water - 1}}\n ------- \n`, '')
                 fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
+                await ctx.scene.enter('waterStats')
             } else {
                 usersTempData.water = 1
                 fs.appendFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n")
+                await ctx.scene.enter('waterStats')
             }
-            await ctx.reply(usersTempData)
         })
 
         water.action('minus', async ctx => {
             usersTempData.id = ctx.callbackQuery.from.id
-
+            // await ctx.deleteMessage(water_message_id)
             let data = fs.readFileSync("db_temp_values.txt", "utf8");
             if (data.includes(`"id":${ctx.callbackQuery.from.id}`)) {
                 let str = data.slice(data.indexOf(`"id":${ctx.callbackQuery.from.id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${ctx.callbackQuery.from.id}`)))
@@ -307,9 +313,9 @@ class SceneGenerator {
                     let data2 = fs.readFileSync("db_temp_values.txt", "utf8")
                     data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water + 1}}\n ------- \n`, '')
                     fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
+                    await ctx.scene.enter('waterStats')
                 }
             }
-            await ctx.reply(usersTempData)
         })
 
         water.action('back', async ctx => {
@@ -317,6 +323,15 @@ class SceneGenerator {
             await ctx.scene.enter('mainMenu')
         })
         return water
+    }
+
+    GenWaterStatsScene () {
+        const waterStats = new Scene('waterStats')
+        waterStats.enter(async (ctx) => {
+            await ctx.editMessageText(`Сегодня Вы выпили ${usersTempData.water} стаканов воды.`, water_message_id)
+            await ctx.scene.enter('water')
+        })
+        return waterStats
     }
 
     GenSleepScene () {
