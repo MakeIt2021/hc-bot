@@ -47,7 +47,7 @@ bot.command('menu', async (ctx) => {
 })
 bot.command('time', async (ctx) => {
     let now = new Date();
-    ctx.reply(now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear())
+    ctx.reply(now)
     // ctx.reply()
 })
 bot.on('sticker', (ctx) => ctx.reply('👍'))
