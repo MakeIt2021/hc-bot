@@ -45,8 +45,14 @@ bot.command('start', async (ctx) => {
 bot.command('menu', async (ctx) => {
     ctx.scene.enter('mainMenu')
 })
+bot.command('time', async (ctx) => {
+    let now = new Date();
+    ctx.reply(now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear())
+    // ctx.reply()
+})
 bot.on('sticker', (ctx) => ctx.reply('👍'))
 bot.hears('hi', (ctx) => ctx.reply('Hey there'))
+
 
 
 
