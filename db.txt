@@ -1,4 +1,2 @@
-{"id":767158800,"name":"Bjsbx","age":67,"sex":"Мужчина","height":629,"weight":828}
- ------- 
-{"id":5732241262,"name":"Fjxj","age":45,"sex":"Мужчина","height":56,"weight":55}
+{"id":767158800,"name":"Bulat","age":"16","sex":"Мужчина","height":"166","weight":"56","activity":"1.375"}
  ------- 

@@ -2,13 +2,14 @@ const Scene = require('telegraf/scenes/base')
 const fs = require("fs")
 
 class Users {
-    constructor(id, name, age, sex, height, weight) {
+    constructor(id, name, age, sex, height, weight, activity) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.sex = sex;
         this.height = height;
         this.weight = weight;
+        this.activity = activity;
     }
 }
 
@@ -115,9 +116,9 @@ class SceneGenerator {
             let user_id = ctx.message.from.id
 
             if (user.id == user_id)
-                user.age = user_age
+                user.age = String(user_age)
             if (user_age && user_age > 0) {
-                await ctx.scene.enter('height')
+                await ctx.scene.enter('activity')
             } else {
                 await ctx.reply('Меня не проведешь! Напиши пожалуйста возраст цифрами и больше нуля')
                 await ctx.scene.reenter()
@@ -125,6 +126,69 @@ class SceneGenerator {
         })
         age.on('message', (ctx) => ctx.reply('Давай лучше возраст'))
         return age
+    }
+
+    GenActivityScene () {
+        const activity = new Scene('activity')
+        activity.enter(async (ctx) => {
+            await ctx.reply('И последнее: как часто Вы занимаетесь спортом', {
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {text: 'У меня сидячая работа и нет физических нагрузок', callback_data: '1.2'}
+                        ],
+                        [
+                            {text: 'Я совершаю небольшие пробежки или делаю лёгкую гимнастику 1 – 3 раза в неделю', callback_data: '1.375'}
+                        ],
+                        [
+                            {text: 'Я занимаюсь спортом со средними нагрузками 3 – 5 раз в неделю', callback_data: '1.55'}
+                        ],
+                        [
+                            {text: 'Я полноценно тренируюсь 6 – 7 раз в неделю', callback_data: '1.725'}
+                        ],
+                        [
+                            {text: 'Моя работа связана с физическим трудом. Я тренируюсь каждый день по 2 раза, включая силоввые упражнения', callback_data: '1.9'}
+                        ]
+                    ]
+                }
+            })
+        })
+        activity.action('1.2', async ctx => {
+            ctx.deleteMessage()
+            let user_activity = '1.2'
+            user.activity = user_activity
+
+            await ctx.scene.enter('height')
+        })
+        activity.action('1.375', async ctx => {
+            ctx.deleteMessage()
+            let user_activity = '1.375'
+            user.activity = user_activity
+
+            await ctx.scene.enter('height')
+        })
+        activity.action('1.55', async ctx => {
+            ctx.deleteMessage()
+            let user_activity = '1.55'
+            user.activity = user_activity
+
+            await ctx.scene.enter('height')
+        })
+        activity.action('1.725', async ctx => {
+            ctx.deleteMessage()
+            let user_activity = '1.725'
+            user.activity = user_activity
+
+            await ctx.scene.enter('height')
+        })
+        activity.action('1.9', async ctx => {
+            ctx.deleteMessage()
+            let user_activity = '1.9'
+            user.activity = user_activity
+
+            await ctx.scene.enter('height')
+        })
+        return activity
     }
 
     GenHeightScene () {
@@ -137,7 +201,7 @@ class SceneGenerator {
             let user_id = ctx.message.from.id
 
             if (user.id == user_id)
-                user.height = user_height
+                user.height = String(user_height)
             if (user_height && user_height > 0) {
                 await ctx.scene.enter('weight')
             } else {
@@ -159,7 +223,7 @@ class SceneGenerator {
 
             let user_id = ctx.message.from.id
             if (user.id == user_id)
-                user.weight = user_weight
+                user.weight = String(user_weight)
             if (user_weight && user_weight > 0) {
                 await ctx.scene.enter('inTotal')
             } else {
@@ -170,6 +234,8 @@ class SceneGenerator {
         weight.on('message', (ctx) => ctx.reply('Давай лучше вес'))
         return weight
     }
+
+
 
     GenInTotalScene () {
         const inTotal = new Scene('inTotal')
@@ -382,7 +448,13 @@ class SceneGenerator {
     GenMealsScene () {
         const meals = new Scene('meals')
         meals.enter(async (ctx) => {
-            await ctx.reply('Питание', {
+            let calories
+            if (user.sex == 'Женщина') {
+                calories = ((10 * parseInt(user.weight)) + (6.25 * parseInt(user.height)) - (5 * parseInt(user.age)) - 161) * parseFloat(user.activity)
+            } else {
+                calories = (10 * parseInt(user.weight) + 6.25 * parseInt(user.height) - 5 * parseInt(user.age) + 5) * parseFloat(user.activity)
+            }
+            await ctx.reply(`Норма потребления калорий для Вас: ${calories}`, {
                 reply_markup: {
                     inline_keyboard: [
                         [
