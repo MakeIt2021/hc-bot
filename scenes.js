@@ -281,7 +281,7 @@ class SceneGenerator {
         const mainMenu = new Scene('mainMenu')
         mainMenu.enter(async (ctx) => {
             // await ctx.reply('Это главное меню.')
-            await ctx.reply(`Основное меню. Ниже текст, он будет скоро`, {
+            await ctx.reply(`Основное меню:`, {
                 reply_markup: {
                     inline_keyboard: [
                         [
@@ -446,15 +446,34 @@ class SceneGenerator {
     }
 
     GenMealsScene () {
+        // TODO: написать, что всё это с 16 лет работает, снять с себя отвественность
+
         const meals = new Scene('meals')
         meals.enter(async (ctx) => {
-            let calories
+            let calories, protein, fats, carbohydrates
             if (user.sex == 'Женщина') {
                 calories = ((10 * parseInt(user.weight)) + (6.25 * parseInt(user.height)) - (5 * parseInt(user.age)) - 161) * parseFloat(user.activity)
             } else {
                 calories = (10 * parseInt(user.weight) + 6.25 * parseInt(user.height) - 5 * parseInt(user.age) + 5) * parseFloat(user.activity)
             }
-            await ctx.reply(`Норма потребления калорий для Вас: ${calories}`, {
+
+            if (user.activity == "1.2") {
+                protein = parseInt(user.weight) * 1
+                fats = parseInt(user.weight) * 0.9
+                carbohydrates = parseInt(user.weight) * 4
+            } else if (user.activity === "1.375" || user.activity === "1.55") {
+                protein = parseInt(user.weight) * 1.2
+                fats = parseInt(user.weight) * 1.2
+                console.error(user.weight)
+                carbohydrates = parseInt(user.weight) * 6
+            } else {
+                protein = parseInt(user.weight) * 2
+                fats = parseInt(user.weight) * 1.5
+                carbohydrates = parseInt(user.weight) * 8.5
+            }
+
+            console.error(user.weight)
+            await ctx.reply(`Калории для Вас: ${calories}, белки: ${protein}, жиры: ${fats}, углеводы: ${carbohydrates}`, {
                 reply_markup: {
                     inline_keyboard: [
                         [
