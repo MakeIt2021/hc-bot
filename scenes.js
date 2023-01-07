@@ -21,10 +21,24 @@ class tempData {
     }
 }
 
+function checkUser(id) {
+    let data
+
+    data = fs.readFileSync("db.txt", "utf8")
+    if (data.includes(`"id":${id}`)) {
+        let str = data.slice(data.indexOf(`"id":${user_id_start}`) - 1, data.indexOf('\n', data.indexOf(`"id":${user_id_start}`)))
+        let currUser = JSON.parse(str)
+        return currUser
+    }
+    return 0
+}
+
 let user = new Users()
 let usersTempData = new tempData()
 let user_id_start
 let water_message_id
+
+
 
 class SceneGenerator {
     GenCheckerScene() {
@@ -449,41 +463,44 @@ class SceneGenerator {
         // TODO: написать, что всё это с 16 лет работает, снять с себя отвественность
 
         const meals = new Scene('meals')
+
         meals.enter(async (ctx) => {
-            let calories, protein, fats, carbohydrates
-            if (user.sex == 'Женщина') {
-                calories = ((10 * parseInt(user.weight)) + (6.25 * parseInt(user.height)) - (5 * parseInt(user.age)) - 161) * parseFloat(user.activity)
-            } else {
-                calories = (10 * parseInt(user.weight) + 6.25 * parseInt(user.height) - 5 * parseInt(user.age) + 5) * parseFloat(user.activity)
-            }
-
-            if (user.activity == "1.2") {
-                protein = parseInt(user.weight) * 1
-                fats = parseInt(user.weight) * 0.9
-                carbohydrates = parseInt(user.weight) * 4
-            } else if (user.activity === "1.375" || user.activity === "1.55") {
-                protein = parseInt(user.weight) * 1.2
-                fats = parseInt(user.weight) * 1.2
-                console.error(user.weight)
-                carbohydrates = parseInt(user.weight) * 6
-            } else {
-                protein = parseInt(user.weight) * 2
-                fats = parseInt(user.weight) * 1.5
-                carbohydrates = parseInt(user.weight) * 8.5
-            }
-
-            console.error(user.weight)
-            await ctx.reply(`Калории для Вас: ${calories}, белки: ${protein}, жиры: ${fats}, углеводы: ${carbohydrates}`, {
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {text: 'Назад в меню', callback_data: 'back'}
-                        ]
-                    ]
+            let user = checkUser(ctx.callbackQuery.from.id)
+            if (user) {
+                let calories, protein, fats, carbohydrates
+                if (user.sex === 'Женщина') {
+                    calories = ((10 * parseInt(user.weight)) + (6.25 * parseInt(user.height)) - (5 * parseInt(user.age)) - 161) * parseFloat(user.activity)
+                } else {
+                    calories = (10 * parseInt(user.weight) + 6.25 * parseInt(user.height) - 5 * parseInt(user.age) + 5) * parseFloat(user.activity)
                 }
-            })
-        })
 
+                if (user.activity === "1.2") {
+                    protein = parseInt(user.weight)
+                    fats = parseInt(user.weight) * 0.9
+                    carbohydrates = parseInt(user.weight) * 4
+                } else if (user.activity === "1.375" || user.activity === "1.55") {
+                    protein = parseInt(user.weight) * 1.2
+                    fats = parseInt(user.weight) * 1.2
+                    console.error(user.weight)
+                    carbohydrates = parseInt(user.weight) * 6
+                } else {
+                    protein = parseInt(user.weight) * 2
+                    fats = parseInt(user.weight) * 1.5
+                    carbohydrates = parseInt(user.weight) * 8.5
+                }
+
+                console.error(user.weight)
+                await ctx.reply(`Калории для Вас: ${calories}, белки: ${protein}, жиры: ${fats}, углеводы: ${carbohydrates}`, {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                {text: 'Назад в меню', callback_data: 'back'}
+                            ]
+                        ]
+                    }
+                })
+            }
+        })
         meals.action('back', async ctx => {
             ctx.deleteMessage()
             await ctx.scene.enter('mainMenu')
