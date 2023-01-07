@@ -20,5 +20,13 @@
   "devDependencies": {
     "nodemon": "^2.0.20"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MakeIt2021/hc-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MakeIt2021/hc-bot/issues"
+  },
+  "homepage": "https://github.com/MakeIt2021/hc-bot#readme",
   "description": ""
 }
