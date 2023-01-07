@@ -45,14 +45,8 @@ class SceneGenerator {
         const checker = new Scene('checker')
         checker.enter(async (ctx) => {
             user_id_start = ctx.message.from.id
-            let data
-
-            data = fs.readFileSync("db.txt", "utf8");
-            // console.log(data)
-            if (data.includes(`"id":${user_id_start}`)) {
-                let str = data.slice(data.indexOf(`"id":${user_id_start}`) - 1, data.indexOf('\n', data.indexOf(`"id":${user_id_start}`)))
-                const user = JSON.parse(str)
-
+            let user = checkUser(ctx.message.from.id)
+            if (user) {
                 await ctx.reply(`Здравствуйте, ${user.name}. Рады возвращению!`)
                 await ctx.scene.enter('mainMenu')
             } else {
@@ -61,19 +55,18 @@ class SceneGenerator {
         })
         return checker
     }
-    //======================================================\\ ПЕРВОНАЧАЛЬНОЕ ПРИВЕТСТВИЕ //======================================================\\
-    GenHelloScene() {
 
+    //======================================================\\ ПЕРВОНАЧАЛЬНОЕ ПРИВЕТСТВИЕ //======================================================\\
+
+    GenHelloScene() {
         const hello = new Scene('hello')
         hello.enter(async (ctx) => {
             await ctx.reply('Здравствуйте. Давайте познакомимся. Напишите мне, как Вас зовут?')
         })
         hello.on('text', async (ctx) => {
             let user_name = ctx.message.text
-            let user_id = ctx.message.from.id
-            user_id_start = ctx.message.from.id
 
-            user.id = user_id
+            user.id = ctx.message.from.id
             user.name = user_name
             if (user_name) {
                 await ctx.reply(`Привет, ${user_name}`)
@@ -105,15 +98,13 @@ class SceneGenerator {
         })
         sex.action('male', async ctx => {
             ctx.deleteMessage()
-            let user_sex = 'Мужчина'
-            user.sex = user_sex
+            user.sex = 'Мужчина'
 
             await ctx.scene.enter('age')
         })
         sex.action('female', async ctx => {
             ctx.deleteMessage()
-            let user_sex = 'Женщина'
-            user.sex = user_sex
+            user.sex = 'Женщина'
 
             await ctx.scene.enter('age')
         })
@@ -129,7 +120,7 @@ class SceneGenerator {
             let user_age = Number(ctx.message.text)
             let user_id = ctx.message.from.id
 
-            if (user.id == user_id)
+            if (user.id === user_id)
                 user.age = String(user_age)
             if (user_age && user_age > 0) {
                 await ctx.scene.enter('activity')
@@ -169,36 +160,31 @@ class SceneGenerator {
         })
         activity.action('1.2', async ctx => {
             ctx.deleteMessage()
-            let user_activity = '1.2'
-            user.activity = user_activity
+            user.activity = '1.2'
 
             await ctx.scene.enter('height')
         })
         activity.action('1.375', async ctx => {
             ctx.deleteMessage()
-            let user_activity = '1.375'
-            user.activity = user_activity
+            user.activity = '1.375'
 
             await ctx.scene.enter('height')
         })
         activity.action('1.55', async ctx => {
             ctx.deleteMessage()
-            let user_activity = '1.55'
-            user.activity = user_activity
+            user.activity = '1.55'
 
             await ctx.scene.enter('height')
         })
         activity.action('1.725', async ctx => {
             ctx.deleteMessage()
-            let user_activity = '1.725'
-            user.activity = user_activity
+            user.activity = '1.725'
 
             await ctx.scene.enter('height')
         })
         activity.action('1.9', async ctx => {
             ctx.deleteMessage()
-            let user_activity = '1.9'
-            user.activity = user_activity
+            user.activity = '1.9'
 
             await ctx.scene.enter('height')
         })
@@ -214,7 +200,7 @@ class SceneGenerator {
             let user_height = Number(ctx.message.text)
             let user_id = ctx.message.from.id
 
-            if (user.id == user_id)
+            if (user.id === user_id)
                 user.height = String(user_height)
             if (user_height && user_height > 0) {
                 await ctx.scene.enter('weight')
@@ -236,7 +222,7 @@ class SceneGenerator {
             let user_weight = Number(ctx.message.text)
 
             let user_id = ctx.message.from.id
-            if (user.id == user_id)
+            if (user.id === user_id)
                 user.weight = String(user_weight)
             if (user_weight && user_weight > 0) {
                 await ctx.scene.enter('inTotal')
@@ -255,7 +241,7 @@ class SceneGenerator {
         const inTotal = new Scene('inTotal')
         inTotal.enter(async (ctx) => {
             let user_id = ctx.message.from.id
-            if (user.id == user_id && user_id == user_id_start){
+            if (user.id === user_id && user_id === user_id_start){
                 await ctx.reply(`Спасибо за Ваши ответы, ${user.name}! Итак, Вы ${user.sex} и Вам ${user.age} лет. Ваш рост ${user.height}, а весите Вы ${user.weight} кг. Всё верно?`, {
                     reply_markup: {
                         inline_keyboard: [
@@ -346,11 +332,6 @@ class SceneGenerator {
             if (data.includes(`"id":${ctx.callbackQuery.from.id}`)) {
                 let str = data.slice(data.indexOf(`"id":${ctx.callbackQuery.from.id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${ctx.callbackQuery.from.id}`)))
                 usersTempData = JSON.parse(str)
-                let now = new Date()
-                if (usersTempData.time.slice(0, 2) != now.getDate().toString() || usersTempData.time.slice(3, 5) != now.getMonth().toString() || usersTempData.time.slice(6, 10) != now.getFullYear().toString()) {
-                    fs.writeFileSync("db_temp_values.txt", "")
-                    data = fs.readFileSync("db_temp_values.txt", "utf8")
-                }
             }
 
             await ctx.reply(`Сегодня Вы выпили ${data ? usersTempData.water : "0"}`, {
@@ -384,14 +365,12 @@ class SceneGenerator {
                 console.log(formerYear)
                 usersTempData.water += 1
                 let now = new Date();
-                if (formerDate != now.getDate().toString() || formerMonth != now.getMonth().toString() || formerYear != now.getFullYear().toString()) {
+                if (formerDate !== now.getDate().toString() || formerMonth !== now.getMonth().toString() || formerYear !== now.getFullYear().toString()) {
                     fs.writeFileSync("db_temp_values.txt", "")
                 }
-                // console.log(usersTempData.time.slice(0, 2))
                 let data2 = fs.readFileSync("db_temp_values.txt", "utf8")
 
                 usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
-                console.log(JSON.stringify(usersTempData))
                 data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water - 1},"time":"${formerDate}-${formerMonth}-${formerYear}"}\n ------- \n`, '')
                 fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
                 await ctx.scene.enter('water')
@@ -399,7 +378,8 @@ class SceneGenerator {
                 usersTempData.water = 1
                 let now = new Date();
                 usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
-                fs.appendFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n")
+                let value = JSON.stringify(usersTempData) + "\n ------- \n"
+                fs.appendFileSync("db_temp_values.txt", value)
                 await ctx.scene.enter('water')
             }
         })
@@ -437,6 +417,8 @@ class SceneGenerator {
         })
         return water
     }
+
+
 
     GenSleepScene () {
         const sleep = new Scene('sleep')
