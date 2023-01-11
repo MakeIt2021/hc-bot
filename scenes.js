@@ -518,6 +518,7 @@ class SceneGenerator {
                 reply_markup: {
                     inline_keyboard: [
                         [
+                            {text: 'Начать упражнение', callback_data: 'exercise'},
                             {text: 'Назад в меню', callback_data: 'back'}
                         ]
                     ]
@@ -525,11 +526,109 @@ class SceneGenerator {
             })
         })
 
+        stress.action('exercise', async ctx => {
+            ctx.deleteMessage()
+            await ctx.scene.enter('exercise')
+        })
+
         stress.action('back', async ctx => {
             ctx.deleteMessage()
             await ctx.scene.enter('mainMenu')
         })
         return stress
+    }
+
+    GenExerciseScene() {
+        const exercise = new Scene('exercise')
+        exercise.enter(async (ctx) => {
+            function inhale() {
+                ctx.reply('Делаем глубокий вдох, вместе считая до четырёх.')
+            }
+            function s1() {
+                ctx.reply('1...')
+            }
+            function s2() {
+                ctx.reply('2...')
+            }
+            function s3() {
+                ctx.reply('3...')
+            }
+            function s4() {
+                ctx.reply('4...')
+            }
+            function s5() {
+                ctx.reply('5...')
+            }
+            function s6() {
+                ctx.reply('6...')
+            }
+            function s7() {
+                ctx.reply('7...')
+            }
+            function s8() {
+                ctx.reply('8')
+            }
+            function hold() {
+                ctx.reply('Задерживаем дыхание, вместе считая до 7')
+            }
+            function exhale() {
+                ctx.reply('Теперь медленный выдох. Считаем до 8')
+            }
+            function stop() {
+                ctx.scene.enter('completed')
+            }
+            await ctx.reply('Сядьте ровно, руки положите на колени. Приложите кончик своего языка к бугорку нёба возле верхних зубов.')
+            setTimeout(inhale, 3000)
+            setTimeout(s1, 5000)
+            setTimeout(s2, 7000)
+            setTimeout(s3, 9000)
+            setTimeout(s4, 11000)
+            setTimeout(hold, 12500)
+            setTimeout(s1, 14000)
+            setTimeout(s2, 15500)
+            setTimeout(s3, 17000)
+            setTimeout(s4, 18500)
+            setTimeout(s5, 20000)
+            setTimeout(s6, 21500)
+            setTimeout(s7, 23000)
+            setTimeout(exhale, 24000)
+            setTimeout(s1, 25000)
+            setTimeout(s2, 26500)
+            setTimeout(s3, 28000)
+            setTimeout(s4, 29500)
+            setTimeout(s5, 31000)
+            setTimeout(s6, 32500)
+            setTimeout(s7, 34000)
+            setTimeout(s8, 35500)
+            setTimeout(stop, 37000)
+        })
+        return exercise
+    }
+
+    GenCompletedScene() {
+        const completed = new Scene('completed')
+        completed.enter(async (ctx) => {
+            await ctx.reply('Упражнение завершено. Если хотите повторить, просто нажмите кнопку ниже.', {
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {text: 'Повторить', callback_data: 'exercise'},
+                            {text: 'Назад в меню', callback_data: 'back'}
+                        ]
+                    ]
+                }
+            })
+        })
+        completed.action('exercise', async ctx => {
+            ctx.deleteMessage()
+            await ctx.scene.enter('exercise')
+        })
+
+        completed.action('back', async ctx => {
+            ctx.deleteMessage()
+            await ctx.scene.enter('mainMenu')
+        })
+        return completed
     }
 }
 
