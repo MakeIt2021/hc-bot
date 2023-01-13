@@ -423,7 +423,7 @@ class SceneGenerator {
     GenSleepScene () {
         const sleep = new Scene('sleep')
         sleep.enter(async (ctx) => {
-            await ctx.reply('Сон', {
+            await ctx.reply('Отход ко сну должен быть до 23:00, потому что выработка мелатонина (гормона сна) начинается уже в 00:00, а заканчивается в 04:00. Поесть надо последний раз за 3 часа до сна. Главное условие - абсолютная темнота (вытянутую руку не должно быть видно). Любой свет - враг мелатонина. человек должен спать 7-8 часов. Если сложно отходить ко сну. За 2 часа ', {
                 reply_markup: {
                     inline_keyboard: [
                         [
@@ -449,7 +449,23 @@ class SceneGenerator {
         meals.enter(async (ctx) => {
             let user = checkUser(ctx.callbackQuery.from.id)
             if (user) {
-                let calories, protein, fats, carbohydrates
+                let calories, protein, fats, carbohydrates, bmi, bmi_result
+                bmi = user.weight / Math.pow(user.height / 100, 2)
+
+                if (bmi < 18.5) {
+                    bmi_result = 'недостаточный вес'
+                } else if (18.5 <= bmi <= 24.9) {
+                    bmi_result = 'нормальный вес'
+                } else if (25 <= bmi <= 29.9) {
+                    bmi_result = 'чрезмерный вес'
+                } else if (30 <= bmi <= 34.9) {
+                    bmi_result = 'ожирение первой степени'
+                } else if (35 <= bmi <= 39.9) {
+                    bmi_result = 'ожирение второй степени'
+                } else if (bmi >= 40) {
+                    bmi_result = 'ожирение третьей степени'
+                }
+
                 if (user.sex === 'Женщина') {
                     calories = ((10 * parseInt(user.weight)) + (6.25 * parseInt(user.height)) - (5 * parseInt(user.age)) - 161) * parseFloat(user.activity)
                 } else {
@@ -472,7 +488,7 @@ class SceneGenerator {
                 }
 
                 console.error(user.weight)
-                await ctx.reply(`Калории для Вас: ${calories}, белки: ${protein}, жиры: ${fats}, углеводы: ${carbohydrates}`, {
+                await ctx.reply(`Ваш индекс массы тела - ${bmi}, ${bmi_result} Калории для Вас: ${calories}, белки: ${protein}, жиры: ${fats}, углеводы: ${carbohydrates}`, {
                     reply_markup: {
                         inline_keyboard: [
                             [
@@ -493,7 +509,7 @@ class SceneGenerator {
     GenSportScene () {
         const sport = new Scene('sport')
         sport.enter(async (ctx) => {
-            await ctx.reply('Спорт', {
+            await ctx.reply('Спорт нужен каждому. Однако, каждому свой. Это зависит от ', {
                 reply_markup: {
                     inline_keyboard: [
                         [
@@ -518,7 +534,10 @@ class SceneGenerator {
                 reply_markup: {
                     inline_keyboard: [
                         [
-                            {text: 'Начать упражнение', callback_data: 'exercise'},
+                            {text: 'Простое дыхание', callback_data: 'exercise'},
+                            {text: 'Усложнённое', callback_data: 'exercise2'},
+                        ],
+                        [
                             {text: 'Назад в меню', callback_data: 'back'}
                         ]
                     ]
@@ -531,6 +550,11 @@ class SceneGenerator {
             await ctx.scene.enter('exercise')
         })
 
+        stress.action('exercise2', async ctx => {
+            ctx.deleteMessage()
+            await ctx.scene.enter('exercise2')
+        })
+
         stress.action('back', async ctx => {
             ctx.deleteMessage()
             await ctx.scene.enter('mainMenu')
@@ -538,9 +562,65 @@ class SceneGenerator {
         return stress
     }
 
+    //todo взять слова из приложения Breath
+
     GenExerciseScene() {
         const exercise = new Scene('exercise')
         exercise.enter(async (ctx) => {
+            function inhale() {
+                ctx.reply('Делаем глубокий вдох, вместе считая до четырёх.')
+            }
+            function s1() {
+                ctx.reply('1...')
+            }
+            function s2() {
+                ctx.reply('2...')
+            }
+            function s3() {
+                ctx.reply('3...')
+            }
+            function s4() {
+                ctx.reply('4...')
+            }
+            function s5() {
+                ctx.reply('5...')
+            }
+            function s6() {
+                ctx.reply('6...')
+            }
+            function s7() {
+                ctx.reply('7...')
+            }
+            function s8() {
+                ctx.reply('8')
+            }
+            function exhale() {
+                ctx.reply('Теперь медленный выдох. Считаем до 6')
+            }
+            function stop() {
+                ctx.scene.enter('completed')
+            }
+            await ctx.reply('Это простое упражнение на дыхание.')
+            setTimeout(inhale, 3000)
+            setTimeout(s1, 5000)
+            setTimeout(s2, 6000)
+            setTimeout(s3, 7000)
+            setTimeout(s4, 8000)
+            setTimeout(exhale, 10000)
+            setTimeout(s1, 11000)
+            setTimeout(s2, 12000)
+            setTimeout(s3, 13000)
+            setTimeout(s4, 14000)
+            setTimeout(s5, 15000)
+            setTimeout(s6, 16000)
+            setTimeout(stop, 18000)
+        })
+        return exercise
+    }
+
+    GenExercise2Scene() {
+        const exercise2 = new Scene('exercise2')
+        exercise2.enter(async (ctx) => {
             function inhale() {
                 ctx.reply('Делаем глубокий вдох, вместе считая до четырёх.')
             }
@@ -602,7 +682,7 @@ class SceneGenerator {
             setTimeout(s8, 35500)
             setTimeout(stop, 37000)
         })
-        return exercise
+        return exercise2
     }
 
     GenCompletedScene() {

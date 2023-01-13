@@ -30,12 +30,13 @@ const mealsScene = curScene.GenMealsScene()
 const sportScene = curScene.GenSportScene()
 const stressScene = curScene.GenStressScene()
 const exerciseScene = curScene.GenExerciseScene()
+const exercise2Scene = curScene.GenExercise2Scene()
 const completedScene = curScene.GenCompletedScene()
 
 
 bot.use(Telegraf.log())
 
-const stage = new Stage([checker, helloScene, sexScene, ageScene, heightScene, weightScene, activityScene, inTotalScene, mainMenuScene, waterScene, sleepScene, mealsScene, sportScene, stressScene, exerciseScene, completedScene])
+const stage = new Stage([checker, helloScene, sexScene, ageScene, heightScene, weightScene, activityScene, inTotalScene, mainMenuScene, waterScene, sleepScene, mealsScene, sportScene, stressScene, exerciseScene, exercise2Scene, completedScene])
 
 bot.use(session())
 bot.use(stage.middleware())
