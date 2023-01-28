@@ -94,6 +94,44 @@ bot.hears('hi', (ctx) => ctx.reply('Hey there'))
 
 
 
+try {
+    bot.action('water', async ctx => {
+        ctx.deleteMessage()
+
+        // water_message_id = (await ctx.reply('Сегодня Вы выпили $ стаканов')).message_id
+        await ctx.scene.enter('water')
+    })
+    bot.action('sleep', async ctx => {
+        ctx.deleteMessage()
+        await ctx.scene.enter('sleep')
+    })
+    bot.action('meals', async ctx => {
+        ctx.deleteMessage()
+        await ctx.scene.enter('meals')
+    })
+    bot.action('sport', async ctx => {
+        ctx.deleteMessage()
+        await ctx.scene.enter('sport')
+    })
+    bot.action('stress', async ctx => {
+        ctx.deleteMessage()
+        await ctx.scene.enter('stress')
+    })
+    bot.action('back', async ctx => {
+        ctx.deleteMessage()
+        await ctx.scene.enter('mainMenu')
+    })
+    bot.action('plus', async ctx => {
+        ctx.reply('Ой, кажется эта кнопка была отправлена довольно давно. Рекомендуем Вам воспользоваться командой /start')
+    })
+    bot.action('minus', async ctx => {
+        ctx.reply('Рекомендуем Вам воспользоваться командой /start')
+    })
+} catch (e) {
+    ctx.reply('Ой, что-то пошло не так. Можно всё починить, нажав сюда: /start')
+}
+
+
 
 bot.launch()
 

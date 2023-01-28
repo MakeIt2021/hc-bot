@@ -316,41 +316,42 @@ class SceneGenerator {
             })
         })
 
-        mainMenu.action('water', async ctx => {
-            ctx.deleteMessage()
-
-            // water_message_id = (await ctx.reply('Сегодня Вы выпили $ стаканов')).message_id
-            await ctx.scene.enter('water')
-        })
-        mainMenu.action('sleep', async ctx => {
-            ctx.deleteMessage()
-            await ctx.scene.enter('sleep')
-        })
-        mainMenu.action('meals', async ctx => {
-            ctx.deleteMessage()
-            await ctx.scene.enter('meals')
-        })
-        mainMenu.action('sport', async ctx => {
-            ctx.deleteMessage()
-            await ctx.scene.enter('sport')
-        })
-        mainMenu.action('stress', async ctx => {
-            ctx.deleteMessage()
-            await ctx.scene.enter('stress')
-        })
+        // mainMenu.action('water', async ctx => {
+        //     ctx.deleteMessage()
+        //
+        //     // water_message_id = (await ctx.reply('Сегодня Вы выпили $ стаканов')).message_id
+        //     await ctx.scene.enter('water')
+        // })
+        // mainMenu.action('sleep', async ctx => {
+        //     ctx.deleteMessage()
+        //     await ctx.scene.enter('sleep')
+        // })
+        // mainMenu.action('meals', async ctx => {
+        //     ctx.deleteMessage()
+        //     await ctx.scene.enter('meals')
+        // })
+        // mainMenu.action('sport', async ctx => {
+        //     ctx.deleteMessage()
+        //     await ctx.scene.enter('sport')
+        // })
+        // mainMenu.action('stress', async ctx => {
+        //     ctx.deleteMessage()
+        //     await ctx.scene.enter('stress')
+        // })
         return mainMenu
     }
 
     GenWaterScene () {
         const water = new Scene('water')
         water.enter(async (ctx) => {
+            let user = checkUser(ctx.callbackQuery.from.id)
             let data = fs.readFileSync("db_temp_values.txt", "utf8");
             if (data.includes(`"id":${ctx.callbackQuery.from.id}`)) {
                 let str = data.slice(data.indexOf(`"id":${ctx.callbackQuery.from.id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${ctx.callbackQuery.from.id}`)))
                 usersTempData = JSON.parse(str)
             }
-
-            await ctx.reply(`Сегодня Вы выпили ${data ? usersTempData.water : "0"}`, {
+            let water_recommended = Math.round(30 * user.weight / 200)
+            await ctx.reply(`Вам рекомендуется употреблять ${water_recommended} стаканов воды (в одном стакане около 200 мл) Сегодня Вы выпили ${data ? usersTempData.water : "0"}`, {
                 reply_markup: {
                     inline_keyboard: [
                         [
@@ -427,10 +428,10 @@ class SceneGenerator {
             }
         })
 
-        water.action('back', async ctx => {
-            ctx.deleteMessage()
-            await ctx.scene.enter('mainMenu')
-        })
+        // water.action('back', async ctx => {
+        //     ctx.deleteMessage()
+        //     await ctx.scene.enter('mainMenu')
+        // })
         return water
     }
 
