@@ -297,7 +297,7 @@ class SceneGenerator {
         const mainMenu = new Scene('mainMenu')
         mainMenu.enter(async (ctx) => {
             // await ctx.reply('Это главное меню.')
-            await ctx.reply(`Основное меню:`, {
+            await ctx.reply(`В последнем обновлении должна была быть исправлена проблема с перемешиванием данных пользователей или забыванием пользователей. Пожалуйста, свяжитесь с @MakeItApps, если заметите эта проблема появится вновь. Основное меню:`, {
                 reply_markup: {
                     inline_keyboard: [
                         [
