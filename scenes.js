@@ -503,6 +503,12 @@ class SceneGenerator {
                     carbohydrates = parseInt(user.weight) * 8.5
                 }
 
+                bmi = bmi.toFixed(2)
+                calories = Math.round(calories)
+                protein = Math.round(protein)
+                fats = Math.round(fats)
+                carbohydrates = Math.round(carbohydrates)
+
                 console.error(user.weight)
                 await ctx.reply(`Ваш индекс массы тела - ${bmi}, ${bmi_result} Калории для Вас: ${calories}, белки: ${protein}, жиры: ${fats}, углеводы: ${carbohydrates}`, {
                     reply_markup: {
@@ -730,12 +736,7 @@ class SceneGenerator {
     GenDeleteDataScene() {
         const deleteData = new Scene('deleteData')
         deleteData.enter(async (ctx) => {
-            await ctx.reply(`Мы храним минимальное количество информации о Вас, вся она необходима только для работы этого бота и никогда не используется для других целей. Это только:
-            1. Ваш идентификатор в Telegram (нужен для работы любого бота, не является какой-то конфиденциальной информацией)
-            2. Ваш рост, вес, возраст и уровень физической активности (нужны только для выполнения расчётов и дачи рекомендаций)
-            3. Количество выпитых стаканов за сегодняшние сутки.
-            
-            Если Вы по каким-либо причинам хотите удалить информацию о себе с нашего сервера, Вы можете сделать это по кнопке ниже.`, {
+            await ctx.reply(`Мы храним минимальное количество информации о Вас, вся она необходима только для работы этого бота и никогда не используется для других целей. Это только:\n1. Ваш идентификатор в Telegram (нужен для работы любого бота, не является какой-то конфиденциальной информацией)\n2. Ваш рост, вес, возраст и уровень физической активности (нужны только для выполнения расчётов и дачи рекомендаций)\n3. Количество выпитых стаканов за сегодняшние сутки.\n\nЕсли Вы по каким-либо причинам хотите удалить информацию о себе с нашего сервера, Вы можете сделать это по кнопке ниже.`, {
                 reply_markup: {
                     inline_keyboard: [
                         [
@@ -762,13 +763,14 @@ class SceneGenerator {
 
         deleteData.action('imsure', async ctx => {
             ctx.deleteMessage()
-            let data = fs.readFileSync("db.txt", "utf8");
-            // console.log(data)
+            let data = fs.readFileSync("db.txt", "utf8")
             if (data.includes(`"id":${ctx.callbackQuery.from.id}`)) {
                 let str = data.slice(data.indexOf(`"id":${ctx.callbackQuery.from.id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${ctx.callbackQuery.from.id}` + ' -------')))
+                ctx.reply(str)
                 data = data.replace(str, '')
+
                 fs.writeFileSync("db.txt", '')
-                fs.appendFileSync("db.txt", data)
+                fs.appendFileSync("db.txt", data + '\n')
                 await ctx.reply('Все данные о Вас удалены. Вы можете зарегистрироваться вновь, нажав на /start')
             }
 
