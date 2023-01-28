@@ -257,7 +257,7 @@ class SceneGenerator {
         const inTotal = new Scene('inTotal')
         inTotal.enter(async (ctx) => {
             let user_id = ctx.message.from.id
-            if (user.id === user_id && user_id === user_id_start){
+            if (user.id === user_id && user_id === user_id_start) {
                 await ctx.reply(`Спасибо за Ваши ответы, ${user.name}! Итак, Вы ${user.sex} и Вам ${user.age} лет. Ваш рост ${user.height}, а весите Вы ${user.weight} кг. Всё верно?`, {
                     reply_markup: {
                         inline_keyboard: [
@@ -285,7 +285,7 @@ class SceneGenerator {
                     await ctx.scene.enter('hello')
                 })
             } else {
-                await ctx.reply('Что-то пошло не так. Мы уведомим Вас, когда можно будет попробовать снова.')
+                await ctx.reply('Сейчас сервер испытывает некоторую нагрузку, поэтому начать пользоваться ботом прямо сейчас, к сожалению, не получится. Пожалуйста, попробуйте позже. Чтобы попробовать снова, воспользуйтесь командой /start')
                 //todo Реализовать уведомление!
             }
         })
@@ -725,6 +725,60 @@ class SceneGenerator {
             await ctx.scene.enter('mainMenu')
         })
         return completed
+    }
+
+    GenDeleteDataScene() {
+        const deleteData = new Scene('deleteData')
+        deleteData.enter(async (ctx) => {
+            await ctx.reply(`Мы храним минимальное количество информации о Вас, вся она необходима только для работы этого бота и никогда не используется для других целей. Это только:
+            1. Ваш идентификатор в Telegram (нужен для работы любого бота, не является какой-то конфиденциальной информацией)
+            2. Ваш рост, вес, возраст и уровень физической активности (нужны только для выполнения расчётов и дачи рекомендаций)
+            3. Количество выпитых стаканов за сегодняшние сутки.
+            
+            Если Вы по каким-либо причинам хотите удалить информацию о себе с нашего сервера, Вы можете сделать это по кнопке ниже.`, {
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {text: 'Удалить все данные обо мне', callback_data: 'delete'},
+                            {text: 'Назад в меню', callback_data: 'back'}
+                        ]
+                    ]
+                }
+            })
+        })
+        deleteData.action('delete', async ctx => {
+            ctx.deleteMessage()
+            await ctx.reply(`Вы уверены на 100%, что хотите удалить все данные о себе?`, {
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {text: 'Да, я на 100% уверен(а)', callback_data: 'imsure'},
+                            {text: 'Назад в меню', callback_data: 'back'}
+                        ]
+                    ]
+                }
+            })
+        })
+
+        deleteData.action('imsure', async ctx => {
+            ctx.deleteMessage()
+            let data = fs.readFileSync("db.txt", "utf8");
+            // console.log(data)
+            if (data.includes(`"id":${ctx.callbackQuery.from.id}`)) {
+                let str = data.slice(data.indexOf(`"id":${ctx.callbackQuery.from.id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${ctx.callbackQuery.from.id}` + ' -------')))
+                data = data.replace(str, '')
+                fs.writeFileSync("db.txt", '')
+                fs.appendFileSync("db.txt", data)
+                await ctx.reply('Все данные о Вас удалены. Вы можете зарегистрироваться вновь, нажав на /start')
+            }
+
+        })
+
+        deleteData.action('back', async ctx => {
+            ctx.deleteMessage()
+            await ctx.scene.enter('mainMenu')
+        })
+        return deleteData
     }
 }
 

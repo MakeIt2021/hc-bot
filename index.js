@@ -32,11 +32,12 @@ const stressScene = curScene.GenStressScene()
 const exerciseScene = curScene.GenExerciseScene()
 const exercise2Scene = curScene.GenExercise2Scene()
 const completedScene = curScene.GenCompletedScene()
+const deleteDataScene = curScene.GenDeleteDataScene()
 
 
 bot.use(Telegraf.log())
 
-const stage = new Stage([checker, helloScene, sexScene, ageScene, heightScene, weightScene, activityScene, inTotalScene, mainMenuScene, waterScene, sleepScene, mealsScene, sportScene, stressScene, exerciseScene, exercise2Scene, completedScene])
+const stage = new Stage([checker, helloScene, sexScene, ageScene, heightScene, weightScene, activityScene, inTotalScene, mainMenuScene, waterScene, sleepScene, mealsScene, sportScene, stressScene, exerciseScene, exercise2Scene, completedScene, deleteDataScene])
 
 bot.use(session())
 bot.use(stage.middleware())
@@ -52,6 +53,11 @@ bot.command('menu', async (ctx) => {
 bot.command('time', async (ctx) => {
     let now = new Date();
     ctx.reply(now)
+    // ctx.reply()
+})
+
+bot.command('info', async (ctx) => {
+    ctx.scene.enter('deleteData')
     // ctx.reply()
 })
 
