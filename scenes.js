@@ -45,8 +45,14 @@ class SceneGenerator {
         const checker = new Scene('checker')
         checker.enter(async (ctx) => {
             user_id_start = ctx.message.from.id
-            let user = checkUser(ctx.message.from.id)
-            if (user) {
+            let data
+
+            data = fs.readFileSync("db.txt", "utf8");
+            // console.log(data)
+            if (data.includes(`"id":${user_id_start}`)) {
+                let str = data.slice(data.indexOf(`"id":${user_id_start}`) - 1, data.indexOf('\n', data.indexOf(`"id":${user_id_start}`)))
+                const user = JSON.parse(str)
+
                 await ctx.reply(`Здравствуйте, ${user.name}. Рады возвращению!`)
                 await ctx.scene.enter('mainMenu')
             } else {
@@ -66,7 +72,10 @@ class SceneGenerator {
         hello.on('text', async (ctx) => {
             let user_name = ctx.message.text
 
-            user.id = ctx.message.from.id
+            let user_id = ctx.message.from.id
+            user_id_start = ctx.message.from.id
+
+            user.id = user_id
             user.name = user_name
             if (user_name) {
                 await ctx.reply(`Привет, ${user_name}`)
@@ -98,13 +107,15 @@ class SceneGenerator {
         })
         sex.action('male', async ctx => {
             ctx.deleteMessage()
-            user.sex = 'Мужчина'
+            let user_sex = 'Мужчина'
+            user.sex = user_sex
 
             await ctx.scene.enter('age')
         })
         sex.action('female', async ctx => {
             ctx.deleteMessage()
-            user.sex = 'Женщина'
+            let user_sex = 'Женщина'
+            user.sex = user_sex
 
             await ctx.scene.enter('age')
         })
@@ -160,31 +171,36 @@ class SceneGenerator {
         })
         activity.action('1.2', async ctx => {
             ctx.deleteMessage()
-            user.activity = '1.2'
+            let user_activity = '1.2'
+            user.activity = user_activity
 
             await ctx.scene.enter('height')
         })
         activity.action('1.375', async ctx => {
             ctx.deleteMessage()
-            user.activity = '1.375'
+            let user_activity = '1.375'
+            user.activity = user_activity
 
             await ctx.scene.enter('height')
         })
         activity.action('1.55', async ctx => {
             ctx.deleteMessage()
-            user.activity = '1.55'
+            let user_activity = '1.55'
+            user.activity = user_activity
 
             await ctx.scene.enter('height')
         })
         activity.action('1.725', async ctx => {
             ctx.deleteMessage()
-            user.activity = '1.725'
+            let user_activity = '1.725'
+            user.activity = user_activity
 
             await ctx.scene.enter('height')
         })
         activity.action('1.9', async ctx => {
             ctx.deleteMessage()
-            user.activity = '1.9'
+            let user_activity = '1.9'
+            user.activity = user_activity
 
             await ctx.scene.enter('height')
         })
