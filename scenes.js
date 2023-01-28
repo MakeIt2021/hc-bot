@@ -424,6 +424,8 @@ class SceneGenerator {
                     data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water + 1},"time":"${formerDate}-${formerMonth}-${formerYear}"}\n ------- \n`, '')
                     fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
                     await ctx.scene.enter('water')
+                } else {
+                    await ctx.scene.enter('water')
                 }
             }
         })
