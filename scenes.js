@@ -349,6 +349,19 @@ class SceneGenerator {
             if (data.includes(`"id":${ctx.callbackQuery.from.id}`)) {
                 let str = data.slice(data.indexOf(`"id":${ctx.callbackQuery.from.id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${ctx.callbackQuery.from.id}`)))
                 usersTempData = JSON.parse(str)
+                let now = new Date()
+                let formerDate = usersTempData.time.slice(0, 2)
+                let formerMonth = usersTempData.time.slice(3, 5)
+                let formerYear = usersTempData.time.slice(6, 10)
+
+                let nowMonth = now.getMonth().toString()
+                if (nowMonth.length === 1) {
+                    nowMonth = '0' + nowMonth
+                }
+                if (formerDate !== now.getDate().toString() || formerMonth !== nowMonth || formerYear !== now.getFullYear().toString()) {
+                    fs.writeFileSync("db_temp_values.txt", "")
+                    data = fs.readFileSync("db_temp_values.txt", "utf8")
+                }
             }
             let water_recommended = Math.round(30 * user.weight / 200)
             await ctx.reply(`Вам рекомендуется употреблять ${water_recommended} стаканов воды (в одном стакане около 200 мл) Сегодня Вы выпили ${data ? usersTempData.water : "0"}`, {
@@ -387,14 +400,23 @@ class SceneGenerator {
                 }
                 let data2 = fs.readFileSync("db_temp_values.txt", "utf8")
 
-                usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
+                if (now.getMonth().toString().length === 2) {
+                    usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
+                } else {
+                    usersTempData.time = now.getDate() + "-0" + now.getMonth() + "-" + now.getFullYear()
+                }
                 data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water - 1},"time":"${formerDate}-${formerMonth}-${formerYear}"}\n ------- \n`, '')
                 fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
                 await ctx.scene.enter('water')
             } else {
                 usersTempData.water = 1
                 let now = new Date();
-                usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
+                console.log(now.getMonth().toString().length)
+                if (now.getMonth().toString().length === 2) {
+                    usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
+                } else {
+                    usersTempData.time = now.getDate() + "-0" + now.getMonth() + "-" + now.getFullYear()
+                }
                 let value = JSON.stringify(usersTempData) + "\n ------- \n"
                 fs.appendFileSync("db_temp_values.txt", value)
                 await ctx.scene.enter('water')
@@ -420,7 +442,11 @@ class SceneGenerator {
                     }
 
                     let data2 = fs.readFileSync("db_temp_values.txt", "utf8")
-                    usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
+                    if (now.getMonth().toString().length === 2) {
+                        usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
+                    } else {
+                        usersTempData.time = now.getDate() + "-0" + now.getMonth() + "-" + now.getFullYear()
+                    }
                     data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water + 1},"time":"${formerDate}-${formerMonth}-${formerYear}"}\n ------- \n`, '')
                     fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
                     await ctx.scene.enter('water')
