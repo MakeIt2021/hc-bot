@@ -342,8 +342,9 @@ class SceneGenerator {
         water.enter(async (ctx) => {
             let user = checkUser(ctx.callbackQuery.from.id)
             let data = fs.readFileSync("db_temp_values.txt", "utf8");
+            let str
             if (data.includes(`"id":${ctx.callbackQuery.from.id}`)) {
-                let str = data.slice(data.indexOf(`"id":${ctx.callbackQuery.from.id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${ctx.callbackQuery.from.id}`)))
+                str = data.slice(data.indexOf(`"id":${ctx.callbackQuery.from.id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${ctx.callbackQuery.from.id}`)))
                 usersTempData = JSON.parse(str)
                 let now = new Date()
                 let formerDate = usersTempData.time.slice(0, 2)
@@ -365,7 +366,7 @@ class SceneGenerator {
                 }
             }
             let water_recommended = Math.round(30 * user.weight / 200)
-            await ctx.replyWithHTML(`Вам рекомендуется употреблять <b>${water_recommended}</b> стаканов<a href="https://telegra.ph/file/28b7d002956f227c7d937.png"> </a>воды (в одном стакане около 200 мл) Сегодня Вы выпили ${data ? usersTempData.water : "0"}`, {
+            await ctx.replyWithHTML(`Вам рекомендуется употреблять <b>${water_recommended}</b> стаканов<a href="https://telegra.ph/file/28b7d002956f227c7d937.png"> </a>воды (в одном стакане около 200 мл) Сегодня Вы выпили ${str ? usersTempData.water : "0"}`, {
                 reply_markup: {
                     inline_keyboard: [
                         [

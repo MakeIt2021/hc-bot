@@ -1,1 +1,7 @@
 Here are values
+{"id":767158800,"name":"bulat","age":"16","sex":"Мужчина","height":"160","weight":"60","activity":"1.2"}
+ ------- 
+{"id":894143373,"name":"N","age":"40","sex":"Мужчина","height":"160","weight":"54","activity":"1.2"}
+ ------- 
+{"id":69157643,"name":"Рус","age":"43","sex":"Мужчина","height":"166","weight":"69","activity":"1.2"}
+ -------
