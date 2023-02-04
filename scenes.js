@@ -334,7 +334,6 @@ class SceneGenerator {
         mainMenu.action('stress', async ctx => {
             ctx.deleteMessage()
             await ctx.scene.enter('stress')
-            await ctx.scene.enter('stress')
         })
         return mainMenu
     }
@@ -650,53 +649,35 @@ class SceneGenerator {
     GenExerciseScene() {
         const exercise = new Scene('exercise')
         exercise.enter(async (ctx) => {
+            function start() {
+                ctx.reply('Расслабьтесь и устраивайтесь поудобнее. Сосредоточьтесь на своём дыхании.')
+            }
             function inhale() {
-                ctx.reply('Делаем глубокий вдох, вместе считая до четырёх.')
-            }
-            function s1() {
-                ctx.reply('1...')
-            }
-            function s2() {
-                ctx.reply('2...')
-            }
-            function s3() {
-                ctx.reply('3...')
-            }
-            function s4() {
-                ctx.reply('4...')
-            }
-            function s5() {
-                ctx.reply('5...')
-            }
-            function s6() {
-                ctx.reply('6...')
-            }
-            function s7() {
-                ctx.reply('7...')
-            }
-            function s8() {
-                ctx.reply('8')
+                ctx.reply('Вдох...')
             }
             function exhale() {
-                ctx.reply('Теперь медленный выдох. Считаем до 6')
+                ctx.reply('Выдох...')
             }
             function stop() {
                 ctx.scene.enter('completed')
             }
             await ctx.reply('Это простое упражнение на дыхание.')
-            setTimeout(inhale, 3000)
-            setTimeout(s1, 5000)
-            setTimeout(s2, 6000)
-            setTimeout(s3, 7000)
-            setTimeout(s4, 8000)
-            setTimeout(exhale, 10000)
-            setTimeout(s1, 11000)
-            setTimeout(s2, 12000)
-            setTimeout(s3, 13000)
-            setTimeout(s4, 14000)
-            setTimeout(s5, 15000)
-            setTimeout(s6, 16000)
-            setTimeout(stop, 18000)
+            setTimeout(start, 3000)
+            setTimeout(inhale, 10000)
+            setTimeout(exhale, 14000)
+            setTimeout(inhale, 18000)
+            setTimeout(exhale, 22000)
+            setTimeout(inhale, 26000)
+            setTimeout(exhale, 30000)
+            setTimeout(inhale, 34000)
+            setTimeout(exhale, 38000)
+            setTimeout(inhale, 42000)
+            setTimeout(exhale, 46000)
+            setTimeout(inhale, 50000)
+            setTimeout(exhale, 54000)
+            setTimeout(inhale, 58000)
+            setTimeout(exhale, 62000)
+            setTimeout(stop, 67000)
         })
         return exercise
     }
@@ -704,66 +685,36 @@ class SceneGenerator {
     GenExercise2Scene() {
         const exercise2 = new Scene('exercise2')
         exercise2.enter(async (ctx) => {
+            function start() {
+                ctx.reply('Расслабьтесь и устраивайтесь поудобнее. Сосредоточьтесь на своём дыхании.')
+            }
             function inhale() {
-                ctx.reply('Делаем глубокий вдох, вместе считая до четырёх.')
-            }
-            function s1() {
-                ctx.reply('1...')
-            }
-            function s2() {
-                ctx.reply('2...')
-            }
-            function s3() {
-                ctx.reply('3...')
-            }
-            function s4() {
-                ctx.reply('4...')
-            }
-            function s5() {
-                ctx.reply('5...')
-            }
-            function s6() {
-                ctx.reply('6...')
-            }
-            function s7() {
-                ctx.reply('7...')
-            }
-            function s8() {
-                ctx.reply('8')
+                ctx.reply('Вдох...')
             }
             function hold() {
-                ctx.reply('Задерживаем дыхание, вместе считая до 7')
+                ctx.reply('Задержите дыхание...')
             }
             function exhale() {
-                ctx.reply('Теперь медленный выдох. Считаем до 8')
+                ctx.reply('Медленный выдох...')
             }
             function stop() {
                 ctx.scene.enter('completed')
             }
-            await ctx.reply('Сядьте ровно, руки положите на колени. Приложите кончик своего языка к бугорку нёба возле верхних зубов.')
-            setTimeout(inhale, 3000)
-            setTimeout(s1, 5000)
-            setTimeout(s2, 7000)
-            setTimeout(s3, 9000)
-            setTimeout(s4, 11000)
-            setTimeout(hold, 12500)
-            setTimeout(s1, 14000)
-            setTimeout(s2, 15500)
-            setTimeout(s3, 17000)
-            setTimeout(s4, 18500)
-            setTimeout(s5, 20000)
-            setTimeout(s6, 21500)
-            setTimeout(s7, 23000)
-            setTimeout(exhale, 24000)
-            setTimeout(s1, 25000)
-            setTimeout(s2, 26500)
-            setTimeout(s3, 28000)
-            setTimeout(s4, 29500)
-            setTimeout(s5, 31000)
-            setTimeout(s6, 32500)
-            setTimeout(s7, 34000)
-            setTimeout(s8, 35500)
-            setTimeout(stop, 37000)
+            await ctx.reply('Это усложнённое упражнение на дыхание. Приложите кончик своего языка к бугорку нёба возле верхних зубов. \n \nПриостановите выполнение упражнения, если почувствуете головокружение')
+            setTimeout(start, 3000)
+            setTimeout(inhale, 10000)
+            setTimeout(hold, 14000)
+            setTimeout(exhale, 21000)
+            setTimeout(inhale, 29000)
+            setTimeout(hold, 33000)
+            setTimeout(exhale, 40000)
+            setTimeout(inhale, 48000)
+            setTimeout(hold, 52000)
+            setTimeout(exhale, 59000)
+            setTimeout(inhale, 67000)
+            setTimeout(hold, 71000)
+            setTimeout(exhale, 78000)
+            setTimeout(stop, 86000)
         })
         return exercise2
     }
@@ -771,7 +722,7 @@ class SceneGenerator {
     GenCompletedScene() {
         const completed = new Scene('completed')
         completed.enter(async (ctx) => {
-            await ctx.reply('Упражнение завершено. Если хотите повторить, просто нажмите кнопку ниже.', {
+            await ctx.reply('Хорошая работа. Если хотите повторить, просто нажмите кнопку ниже.', {
                 reply_markup: {
                     inline_keyboard: [
                         [
