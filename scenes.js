@@ -351,11 +351,16 @@ class SceneGenerator {
                 let formerMonth = usersTempData.time.slice(3, 5)
                 let formerYear = usersTempData.time.slice(6, 10)
 
+                let nowDate = now.getDate().toString()
+                if (nowDate.length === 1) {
+                    nowDate = '0' + nowDate
+                }
                 let nowMonth = now.getMonth().toString()
                 if (nowMonth.length === 1) {
                     nowMonth = '0' + nowMonth
                 }
-                if (formerDate !== now.getDate().toString() || formerMonth !== nowMonth || formerYear !== now.getFullYear().toString()) {
+
+                if (formerDate !== nowDate || formerMonth !== nowMonth || formerYear !== now.getFullYear().toString()) {
                     fs.writeFileSync("db_temp_values.txt", "")
                     data = fs.readFileSync("db_temp_values.txt", "utf8")
                 }
@@ -392,28 +397,37 @@ class SceneGenerator {
                 console.log(formerYear)
                 usersTempData.water += 1
                 let now = new Date();
-                if (formerDate !== now.getDate().toString() || formerMonth !== now.getMonth().toString() || formerYear !== now.getFullYear().toString()) {
+                let nowDate = now.getDate().toString()
+                if (nowDate.length === 1) {
+                    nowDate = '0' + nowDate
+                }
+                let nowMonth = now.getMonth().toString()
+                if (nowMonth.length === 1) {
+                    nowMonth = '0' + nowMonth
+                }
+                if (formerDate !== nowDate || formerMonth !== nowMonth || formerYear !== now.getFullYear().toString()) {
                     fs.writeFileSync("db_temp_values.txt", "")
                 }
                 let data2 = fs.readFileSync("db_temp_values.txt", "utf8")
 
-                if (now.getMonth().toString().length === 2) {
-                    usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
-                } else {
-                    usersTempData.time = now.getDate() + "-0" + now.getMonth() + "-" + now.getFullYear()
-                }
+                usersTempData.time = nowDate + "-" + nowMonth + "-" + now.getFullYear()
+
                 data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water - 1},"time":"${formerDate}-${formerMonth}-${formerYear}"}\n ------- \n`, '')
                 fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
                 await ctx.scene.enter('water')
             } else {
                 usersTempData.water = 1
                 let now = new Date();
-                console.log(now.getMonth().toString().length)
-                if (now.getMonth().toString().length === 2) {
-                    usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
-                } else {
-                    usersTempData.time = now.getDate() + "-0" + now.getMonth() + "-" + now.getFullYear()
+                let nowDate = now.getDate().toString()
+                if (nowDate.length === 1) {
+                    nowDate = '0' + nowDate
                 }
+                let nowMonth = now.getMonth().toString()
+                if (nowMonth.length === 1) {
+                    nowMonth = '0' + nowMonth
+                }
+                console.log(now.getMonth().toString().length)
+                usersTempData.time = nowDate + "-" + nowMonth + "-" + now.getFullYear()
                 let value = JSON.stringify(usersTempData) + "\n ------- \n"
                 fs.appendFileSync("db_temp_values.txt", value)
                 await ctx.scene.enter('water')
@@ -434,16 +448,20 @@ class SceneGenerator {
                 if (usersTempData.water >= 1) {
                     usersTempData.water -= 1
                     let now = new Date();
-                    if (formerDate != now.getDate().toString() || formerMonth != now.getMonth().toString() || formerYear != now.getFullYear().toString()) {
+                    let nowDate = now.getDate().toString()
+                    if (nowDate.length === 1) {
+                        nowDate = '0' + nowDate
+                    }
+                    let nowMonth = now.getMonth().toString()
+                    if (nowMonth.length === 1) {
+                        nowMonth = '0' + nowMonth
+                    }
+                    if (formerDate != nowDate || formerMonth != nowMonth || formerYear != now.getFullYear().toString()) {
                         fs.writeFileSync("db_temp_values.txt", "")
                     }
 
                     let data2 = fs.readFileSync("db_temp_values.txt", "utf8")
-                    if (now.getMonth().toString().length === 2) {
-                        usersTempData.time = now.getDate() + "-" + now.getMonth() + "-" + now.getFullYear()
-                    } else {
-                        usersTempData.time = now.getDate() + "-0" + now.getMonth() + "-" + now.getFullYear()
-                    }
+                    usersTempData.time = nowDate + "-" + nowMonth + "-" + now.getFullYear()
                     data2 = data2.replace(`{"id":${ctx.callbackQuery.from.id},"water":${usersTempData.water + 1},"time":"${formerDate}-${formerMonth}-${formerYear}"}\n ------- \n`, '')
                     fs.writeFileSync("db_temp_values.txt", JSON.stringify(usersTempData) + "\n ------- \n" + data2)
                     await ctx.scene.enter('water')
@@ -451,11 +469,6 @@ class SceneGenerator {
                     await ctx.scene.enter('water')
                 }
             }
-        })
-
-        water.action('back', async ctx => {
-            ctx.deleteMessage()
-            await ctx.scene.enter('mainMenu')
         })
         return water
     }
@@ -535,7 +548,6 @@ class SceneGenerator {
                 } else if (18.5 <= bmi && bmi < 24.9) {
                     bmi_result = 'нормальный'
                     result = `Ваш ИМТ ~${bmi}. Это говорит о том, что у Вас нормальный вес, однако каждому человеку, даже если у него всё в порядке с весом важно соблюдать питьевой режим, заниматься спортом, а также контролировать время отхода ко сну и пробуждения. Также, всем необходимо уметь управлять уровнем стресса, ведь гормоны стресса могут приводить к снижению иммунитета и появлению других проблем со здоровьем.
-
 Мы посчитали, что Вам рекомендуется употреблять ~${calories} калорий в сутки для поддержания Вашего веса.`
                 } else if (25 <= bmi && bmi <= 29.9) {
                     bmi_result = 'чрезмерный вес'
@@ -556,16 +568,12 @@ class SceneGenerator {
                 } else if (35 <= bmi && bmi <= 39.9) {
                     bmi_result = 'ожирение второй степени'
                     result = `Ваш ИМТ ~${bmi}, это похоже на ожирение II степени. Пожалуйста, обратите внимание на информацию о том, как мы считали, и к кому относится приведённая здесь информация, отправив команду /about. С увеличением степени ожирения увеличивается риск развития сопутствующих заболеваний – от высокого до чрезвычайно высокого.
-
 Мы бы очень рекомендовали Вам обратиться к врачу эндокринологу. Именно он может провести грамотное обследование и дать направления на возможные необходимые исследования. 
-
 Лечение необходимо, т.к. часто из-за ожирения резко возрастают риски развития заболеваний сердечно-сосудистой, опорно-двигательной системы, некоторых онкологических заболеваний. Больше об этом можно узнать в статье всемирной организации здравоохранения.`
                 } else if (bmi >= 40) {
                     bmi_result = 'ожирение третьей степени'
                     result = `Ваш ИМТ ~${bmi}, это похоже на ожирение III степени (максимальная степень ожирения). Пожалуйста, обратите внимание на информацию о том, как мы считали, и к кому относится приведённая здесь информация, отправив команду /about. С увеличением степени ожирения увеличивается риск развития сопутствующих заболеваний – от высокого до чрезвычайно высокого.
-
 Мы бы очень рекомендовали Вам обратиться к врачу эндокринологу. Именно он может провести грамотное обследование и дать направления на возможные необходимые исследования. 
-
 Лечение необходимо, т.к. часто из-за ожирения резко возрастают риски развития заболеваний сердечно-сосудистой, опорно-двигательной системы, некоторых онкологических заболеваний. Больше об этом можно узнать в статье всемирной организации здравоохранения.`
                 }
 

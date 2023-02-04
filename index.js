@@ -52,7 +52,7 @@ bot.command('menu', async (ctx) => {
 })
 bot.command('time', async (ctx) => {
     let now = new Date();
-    ctx.reply(now)
+    ctx.reply(now.getDate())
     // ctx.reply()
 })
 
@@ -96,9 +96,6 @@ bot.hears('hi', (ctx) => ctx.reply('Hey there'))
 
 try {
     bot.action('water', async ctx => {
-        ctx.deleteMessage()
-
-        // water_message_id = (await ctx.reply('Сегодня Вы выпили $ стаканов')).message_id
         await ctx.scene.enter('water')
     })
 } catch (e) {
@@ -106,7 +103,6 @@ try {
 }
 try {
     bot.action('sleep', async ctx => {
-        ctx.deleteMessage()
         await ctx.scene.enter('sleep')
     })
 } catch (e) {
@@ -114,7 +110,6 @@ try {
 }
 try {
     bot.action('meals', async ctx => {
-        ctx.deleteMessage()
         await ctx.scene.enter('meals')
     })
 } catch (e) {
@@ -122,7 +117,6 @@ try {
 }
 try {
     bot.action('sport', async ctx => {
-        ctx.deleteMessage()
         await ctx.scene.enter('sport')
     })
 } catch (e) {
@@ -130,7 +124,6 @@ try {
 }
 try{
         bot.action('stress', async ctx => {
-        ctx.deleteMessage()
         await ctx.scene.enter('stress')
     })
 } catch (e) {
@@ -138,7 +131,6 @@ try{
 }
 try {
     bot.action('back', async ctx => {
-        ctx.deleteMessage()
         await ctx.scene.enter('mainMenu')
     })
 } catch (e) {
