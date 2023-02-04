@@ -47,23 +47,23 @@ bot.use(stage.middleware())
 bot.help((ctx) => ctx.reply('Send me a sticker'))
 bot.command('echo', (ctx) => ctx.reply('Echo'))
 bot.command('start', async (ctx) => {
-    ctx.scene.enter('checker')
+    await ctx.scene.enter('checker')
 })
 bot.command('menu', async (ctx) => {
-    ctx.scene.enter('mainMenu')
+    await ctx.scene.enter('mainMenu')
 })
 bot.command('time', async (ctx) => {
     let now = new Date();
-    ctx.reply(now.getDate())
+    await ctx.reply(now.getDate())
     // ctx.reply()
 })
 
 bot.command('info', async (ctx) => {
-    ctx.scene.enter('deleteData')
+    await ctx.scene.enter('deleteData')
     // ctx.reply()
 })
 bot.command('about', async (ctx) => {
-    ctx.scene.enter('disclaimer')
+    await ctx.scene.enter('disclaimer')
 })
 
 bot.command('stats', async (ctx) => {
