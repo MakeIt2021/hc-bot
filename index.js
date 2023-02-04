@@ -25,6 +25,7 @@ const inTotalScene = curScene.GenInTotalScene()
 // Main scenes
 const mainMenuScene = curScene.GenMainMenuScene()
 const waterScene = curScene.GenWaterScene()
+const whyWaterScene = curScene.GenWhyWaterScene()
 const sleepScene = curScene.GenSleepScene()
 const mealsScene = curScene.GenMealsScene()
 const sportScene = curScene.GenSportScene()
@@ -33,11 +34,12 @@ const exerciseScene = curScene.GenExerciseScene()
 const exercise2Scene = curScene.GenExercise2Scene()
 const completedScene = curScene.GenCompletedScene()
 const deleteDataScene = curScene.GenDeleteDataScene()
+const disclaimerScene = curScene.GenDisclaimerScene()
 
 
 bot.use(Telegraf.log())
 
-const stage = new Stage([checker, helloScene, sexScene, ageScene, heightScene, weightScene, activityScene, inTotalScene, mainMenuScene, waterScene, sleepScene, mealsScene, sportScene, stressScene, exerciseScene, exercise2Scene, completedScene, deleteDataScene])
+const stage = new Stage([checker, helloScene, sexScene, ageScene, heightScene, weightScene, activityScene, inTotalScene, mainMenuScene, waterScene, whyWaterScene, sleepScene, mealsScene, sportScene, stressScene, exerciseScene, exercise2Scene, completedScene, deleteDataScene, disclaimerScene])
 
 bot.use(session())
 bot.use(stage.middleware())
@@ -59,6 +61,9 @@ bot.command('time', async (ctx) => {
 bot.command('info', async (ctx) => {
     ctx.scene.enter('deleteData')
     // ctx.reply()
+})
+bot.command('about', async (ctx) => {
+    ctx.scene.enter('disclaimer')
 })
 
 bot.command('stats', async (ctx) => {
