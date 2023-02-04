@@ -26,7 +26,7 @@ function checkUser(id) {
 
     data = fs.readFileSync("db.txt", "utf8")
     if (data.includes(`"id":${id}`)) {
-        let str = data.slice(data.indexOf(`"id":${user_id_start}`) - 1, data.indexOf('\n', data.indexOf(`"id":${user_id_start}`)))
+        let str = data.slice(data.indexOf(`"id":${id}`) - 1, data.indexOf('\n', data.indexOf(`"id":${id}`)))
         return JSON.parse(str)
     }
     return 0
