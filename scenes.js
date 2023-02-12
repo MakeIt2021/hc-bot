@@ -840,9 +840,12 @@ class SceneGenerator {
                 reply_markup: {
                     inline_keyboard: [
                         [
-                            {text: 'Удалить все данные обо мне', callback_data: 'delete'},
-                            {text: 'Назад в меню', callback_data: 'back'}
+                            {text: 'Удалить все данные обо мне', callback_data: 'delete'}
+                        ],
+                        [
+                                {text: 'Назад в меню', callback_data: 'back'}
                         ]
+
                     ]
                 }
             })
