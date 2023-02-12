@@ -62,7 +62,7 @@ bot.command('info', async (ctx) => {
     await ctx.scene.enter('deleteData')
     // ctx.reply()
 })
-bot.command('about', async (ctx) => {
+bot.command('disclaimer', async (ctx) => {
     await ctx.scene.enter('disclaimer')
 })
 
