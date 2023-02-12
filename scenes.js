@@ -135,7 +135,7 @@ class SceneGenerator {
             if (user_age && user_age > 0) {
                 await ctx.scene.enter('activity')
             } else {
-                await ctx.reply('Меня не проведешь! Напиши пожалуйста возраст цифрами и больше нуля')
+                await ctx.reply('Напиши пожалуйста возраст цифрами и больше нуля')
                 await ctx.scene.reenter()
             }
         })
@@ -209,7 +209,7 @@ class SceneGenerator {
     GenHeightScene () {
         const height = new Scene('height')
         height.enter(async (ctx) => {
-            await ctx.reply('Спасибо. А какой у Вас рост?')
+            await ctx.reply('Спасибо. А какой у Вас рост (в сантиметрах)?')
         })
         height.on('text', async (ctx) => {
             let user_height = Number(ctx.message.text)
@@ -220,7 +220,7 @@ class SceneGenerator {
             if (user_height && user_height > 0) {
                 await ctx.scene.enter('weight')
             } else {
-                await ctx.reply('Меня не проведешь! Напиши пожалуйста возраст цифрами и больше нуля')
+                await ctx.reply('Напиши, пожалуйста, свой рост в сантиметрах цифрами и больше нуля')
                 await ctx.scene.reenter()
             }
         })
@@ -231,7 +231,7 @@ class SceneGenerator {
     GenWeightScene () {
         const weight = new Scene('weight')
         weight.enter(async (ctx) => {
-            await ctx.reply('Благодарю. Сколько Вы весите?')
+            await ctx.reply('Благодарю. Сколько Вы весите (в килограммах)?')
         })
         weight.on('text', async (ctx) => {
             let user_weight = Number(ctx.message.text)
@@ -242,7 +242,7 @@ class SceneGenerator {
             if (user_weight && user_weight > 0) {
                 await ctx.scene.enter('inTotal')
             } else {
-                await ctx.reply('Меня не проведешь! Напиши пожалуйста возраст цифрами и больше нуля')
+                await ctx.reply('Напиши, пожалуйста, свой вес в килограммах цифрами и больше нуля')
                 await ctx.scene.reenter()
             }
         })
